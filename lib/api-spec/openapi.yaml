@@ -3,20 +3,24 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: AgriShare equipment marketplace API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
-    description: Health operations
+  - name: equipment
+  - name: bookings
+  - name: discovery
+  - name: reviews
+  - name: dashboard
+  - name: storage
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +28,457 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /equipment:
+    get:
+      operationId: listEquipment
+      tags: [equipment]
+      summary: Search and filter marketplace equipment
+      parameters:
+        - in: query
+          name: search
+          schema: { type: string }
+        - in: query
+          name: category
+          schema: { type: string }
+        - in: query
+          name: transaction
+          schema: { type: string, enum: [all, buy, rent] }
+        - in: query
+          name: location
+          schema: { type: string }
+        - in: query
+          name: condition
+          schema: { type: string, enum: [all, new, used] }
+        - in: query
+          name: maxPrice
+          schema: { type: number }
+        - in: query
+          name: minRating
+          schema: { type: number }
+      responses:
+        "200":
+          description: Equipment matching filters
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Equipment" }
+    post:
+      operationId: createEquipment
+      tags: [equipment]
+      summary: Create an equipment listing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EquipmentInput" }
+      responses:
+        "201":
+          description: Created listing
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Equipment" }
+  /equipment/{id}:
+    get:
+      operationId: getEquipment
+      tags: [equipment]
+      summary: Get equipment details
+      parameters:
+        - { in: path, name: id, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: Equipment details
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Equipment" }
+        "404": { description: Not found }
+  /equipment/{id}/reviews:
+    post:
+      operationId: createReview
+      tags: [reviews]
+      summary: Add a rating and review
+      parameters:
+        - { in: path, name: id, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ReviewInput" }
+      responses:
+        "201":
+          description: Review added
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Review" }
+  /equipment/{id}/group-interest:
+    post:
+      operationId: expressGroupInterest
+      tags: [equipment]
+      summary: Register interest in a group purchase
+      parameters:
+        - { in: path, name: id, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: Group purchase interest updated
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/GroupInterest" }
+  /equipment/{id}/replacements:
+    get:
+      operationId: findReplacements
+      tags: [discovery]
+      summary: Find nearby replacement equipment
+      parameters:
+        - { in: path, name: id, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: Available nearby alternatives
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/NearbyEquipment" }
+  /equipment/{id}/purchase:
+    post:
+      operationId: createPurchase
+      tags: [equipment]
+      summary: Buy a listed piece of equipment
+      parameters:
+        - { in: path, name: id, required: true, schema: { type: string } }
+      responses:
+        "201":
+          description: Purchase recorded
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Purchase" }
+  /equipment/{id}/contact:
+    post:
+      operationId: contactOwner
+      tags: [equipment]
+      summary: Send a message to the equipment owner
+      parameters:
+        - { in: path, name: id, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ContactInput" }
+      responses:
+        "201":
+          description: Message sent
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ContactMessage" }
+  /storage/uploads/request-url:
+    post:
+      operationId: requestUploadUrl
+      tags: [storage]
+      summary: Request a signed upload URL for an image
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UploadUrlRequest" }
+      responses:
+        "200":
+          description: Upload URL generated
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/UploadUrlResponse" }
+  /storage/uploads/complete:
+    post:
+      operationId: completeImageUpload
+      tags: [storage]
+      summary: Finalize an uploaded image and mark it public
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UploadCompleteInput" }
+      responses:
+        "200":
+          description: Public image path
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/UploadCompleteResponse" }
+  /price-estimates:
+    post:
+      operationId: estimatePrice
+      tags: [equipment]
+      summary: Estimate resale price
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PriceEstimateInput" }
+      responses:
+        "200":
+          description: Estimated price range
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PriceEstimate" }
+  /recommendations:
+    post:
+      operationId: recommendEquipment
+      tags: [discovery]
+      summary: Recommend machinery for a farmer's crop and work
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RecommendationInput" }
+      responses:
+        "200":
+          description: Matching equipment
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Equipment" }
+  /nearby:
+    get:
+      operationId: getNearbyEquipment
+      tags: [discovery]
+      summary: List nearby available equipment
+      parameters:
+        - in: query
+          name: location
+          schema: { type: string }
+      responses:
+        "200":
+          description: Nearby equipment
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/NearbyEquipment" }
+  /bookings:
+    get:
+      operationId: listBookings
+      tags: [bookings]
+      summary: List current farmer's bookings
+      responses:
+        "200":
+          description: Bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Booking" }
+    post:
+      operationId: createBooking
+      tags: [bookings]
+      summary: Book equipment for a date range
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BookingInput" }
+      responses:
+        "201":
+          description: Booking created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Booking" }
+  /dashboard:
+    get:
+      operationId: getDashboard
+      tags: [dashboard]
+      summary: Get dashboard totals and activity
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Dashboard" }
 components:
   schemas:
     HealthStatus:
       type: object
       properties:
-        status:
-          type: string
-      required:
-        - status
-
+        status: { type: string }
+      required: [status]
+    Equipment:
+      type: object
+      required: [id, name, category, description, buyPrice, rentalPrice, condition, year, usageHours, location, images, rating, availability, ownerName, ownerTrust, distanceKm, groupInterested]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        category: { type: string }
+        description: { type: string }
+        buyPrice: { type: number }
+        rentalPrice: { type: number }
+        condition: { type: string, enum: [New, Excellent, Good, Fair] }
+        year: { type: integer }
+        usageHours: { type: integer }
+        location: { type: string }
+        images:
+          type: array
+          items: { type: string }
+        rating: { type: number }
+        availability: { type: boolean }
+        ownerName: { type: string }
+        ownerTrust: { type: integer }
+        distanceKm: { type: number }
+        groupInterested: { type: integer }
+        maintenanceHistory:
+          type: array
+          items: { type: string }
+        reviews:
+          type: array
+          items: { $ref: "#/components/schemas/Review" }
+    EquipmentInput:
+      type: object
+      required: [name, category, description, buyPrice, rentalPrice, condition, year, usageHours, location]
+      properties:
+        name: { type: string, minLength: 2 }
+        category: { type: string }
+        description: { type: string, minLength: 10 }
+        buyPrice: { type: number, minimum: 0 }
+        rentalPrice: { type: number, minimum: 0 }
+        condition: { type: string, enum: [New, Excellent, Good, Fair] }
+        year: { type: integer, minimum: 1970 }
+        usageHours: { type: integer, minimum: 0 }
+        location: { type: string }
+        images:
+          type: array
+          items: { type: string }
+    Review:
+      type: object
+      required: [id, author, rating, comment, createdAt]
+      properties:
+        id: { type: string }
+        author: { type: string }
+        rating: { type: integer, minimum: 1, maximum: 5 }
+        comment: { type: string }
+        createdAt: { type: string, format: date-time }
+    ReviewInput:
+      type: object
+      required: [rating, comment]
+      properties:
+        rating: { type: integer, minimum: 1, maximum: 5 }
+        comment: { type: string, minLength: 3, maxLength: 800 }
+    Booking:
+      type: object
+      required: [id, equipmentId, equipmentName, startDate, endDate, totalPrice, status, location]
+      properties:
+        id: { type: string }
+        equipmentId: { type: string }
+        equipmentName: { type: string }
+        startDate: { type: string, format: date }
+        endDate: { type: string, format: date }
+        totalPrice: { type: number }
+        status: { type: string, enum: [Requested, Confirmed, Completed, Cancelled] }
+        location: { type: string }
+    BookingInput:
+      type: object
+      required: [equipmentId, startDate, endDate]
+      properties:
+        equipmentId: { type: string }
+        startDate: { type: string, format: date }
+        endDate: { type: string, format: date }
+    NearbyEquipment:
+      type: object
+      required: [id, name, category, location, distanceKm, buyPrice, rentalPrice, availability, image]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        category: { type: string }
+        location: { type: string }
+        distanceKm: { type: number }
+        buyPrice: { type: number }
+        rentalPrice: { type: number }
+        availability: { type: boolean }
+        image: { type: string }
+    GroupInterest:
+      type: object
+      required: [equipmentId, interestedCount, goal]
+      properties:
+        equipmentId: { type: string }
+        interestedCount: { type: integer }
+        goal: { type: integer }
+    PriceEstimateInput:
+      type: object
+      required: [category, year, usageHours, condition]
+      properties:
+        category: { type: string }
+        year: { type: integer, minimum: 1970 }
+        usageHours: { type: integer, minimum: 0 }
+        condition: { type: string, enum: [New, Excellent, Good, Fair] }
+    PriceEstimate:
+      type: object
+      required: [low, high, suggested, rationale]
+      properties:
+        low: { type: number }
+        high: { type: number }
+        suggested: { type: number }
+        rationale: { type: string }
+    RecommendationInput:
+      type: object
+      required: [crop, acres, work, budget, transaction]
+      properties:
+        crop: { type: string }
+        acres: { type: number, minimum: 0.1 }
+        work: { type: string }
+        budget: { type: number, minimum: 0 }
+        transaction: { type: string, enum: [buy, rent] }
+    Dashboard:
+      type: object
+      required: [activeListings, activeRentals, purchases, pendingRequests, savedCount, trustScore, recentActivity]
+      properties:
+        activeListings: { type: integer }
+        activeRentals: { type: integer }
+        purchases: { type: integer }
+        pendingRequests: { type: integer }
+        savedCount: { type: integer }
+        trustScore: { type: integer }
+        recentActivity:
+          type: array
+          items: { type: string }
+    Purchase:
+      type: object
+      required: [id, equipmentId, equipmentName, price, status]
+      properties:
+        id: { type: string }
+        equipmentId: { type: string }
+        equipmentName: { type: string }
+        price: { type: number }
+        status: { type: string, enum: [Reserved] }
+    ContactInput:
+      type: object
+      required: [message]
+      properties:
+        message: { type: string, minLength: 3, maxLength: 1000 }
+    ContactMessage:
+      type: object
+      required: [id, equipmentId, ownerName, status, createdAt]
+      properties:
+        id: { type: string }
+        equipmentId: { type: string }
+        ownerName: { type: string }
+        status: { type: string, enum: [Sent] }
+        createdAt: { type: string, format: date-time }
+    UploadUrlRequest:
+      type: object
+      required: [name, size, contentType]
+      properties:
+        name: { type: string, minLength: 1 }
+        size: { type: integer, minimum: 1 }
+        contentType: { type: string, minLength: 1 }
+    UploadUrlResponse:
+      type: object
+      required: [uploadURL, objectPath, metadata]
+      properties:
+        uploadURL: { type: string, format: uri }
+        objectPath: { type: string }
+        metadata: { $ref: "#/components/schemas/UploadUrlRequest" }
+    UploadCompleteInput:
+      type: object
+      required: [objectPath]
+      properties:
+        objectPath: { type: string, minLength: 1 }
+    UploadCompleteResponse:
+      type: object
+      required: [imageUrl]
+      properties:
+        imageUrl: { type: string }

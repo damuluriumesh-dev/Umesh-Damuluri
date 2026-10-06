@@ -1,0 +1,285 @@
+Build a full-stack web application called **AgriShare – Smart Agricultural Equipment Marketplace**.
+
+### Project Goal
+Create a modern platform where farmers can **BUY, SELL, and RENT agricultural equipment** such as tractors, harvesters, water pumps, seeders, sprayers, cultivators, and other farming machinery.
+
+The application should be designed as a hackathon-ready MVP with a professional, modern, easy-to-use interface.
+
+### Technology
+Use:
+- React
+- Tailwind CSS
+- Node.js + Express
+- PostgreSQL database
+- REST API
+- Responsive design for desktop and mobile
+
+If PostgreSQL is not immediately configured, create the application with realistic demo data first and structure the code so PostgreSQL can be connected easily.
+
+### Main Pages
+
+1. **Landing Page**
+   - AgriShare logo/name
+   - Hero section:
+     "The Smart Marketplace for Agricultural Equipment"
+   - Search equipment
+   - Buttons: Buy Equipment, Rent Equipment, Sell Equipment
+   - Explain the problem and solution
+   - Featured equipment
+   - How it works
+   - Benefits for farmers
+   - Call-to-action section
+
+2. **Marketplace**
+   - Display agricultural equipment as attractive cards.
+   - Each card should show:
+     - Equipment image
+     - Name
+     - Buy price
+     - Rental price/day
+     - Location
+     - Condition
+     - Rating
+     - Buy/Rent button
+   - Search bar
+   - Filters:
+     - Buy/Rent
+     - Equipment type
+     - Price range
+     - Location
+     - New/Used
+     - Rating
+
+3. **Equipment Details**
+   - Large equipment images
+   - Equipment name
+   - Description
+   - Buy price
+   - Rental price
+   - Location
+   - Owner information
+   - Condition
+   - Manufacturing year
+   - Usage hours
+   - Maintenance history
+   - Rating and reviews
+   - Buttons:
+     "Buy Now"
+     "Rent Now"
+     "Contact Owner"
+
+4. **Sell Equipment**
+   Create a form where owners can list equipment:
+   - Equipment name
+   - Category
+   - Buy price
+   - Rental price
+   - New/Used
+   - Manufacturing year
+   - Usage hours
+   - Condition
+   - Location
+   - Description
+   - Upload images
+
+5. **Rent Equipment**
+   - Select equipment
+   - Select rental start date
+   - Select return date
+   - Show total estimated rental cost
+   - Confirm booking
+
+6. **Smart Recommendation**
+   Create a page called "Smart Equipment Finder".
+
+   Ask the farmer:
+   - What crop are you growing?
+   - How many acres?
+   - What work do you need to perform?
+   - What is your budget?
+   - Buy or Rent?
+
+   Based on these inputs, recommend suitable equipment.
+
+   Example:
+   Farmer enters:
+   Rice
+   5 acres
+   Harvesting
+   ₹5,000
+   Rent
+
+   Show:
+   "Recommended Equipment"
+   Combine Harvester
+   ₹4,500/day
+   4.8 ⭐
+   4.2 km away
+
+   For the MVP, recommendation logic can use predefined rules/demo AI logic. Structure the code so an AI API can be added later.
+
+7. **Dashboard**
+   Create a farmer/owner dashboard with:
+   - My Listings
+   - My Rentals
+   - My Purchases
+   - Booking Requests
+   - Saved Equipment
+   - Profile
+
+8. **Authentication**
+   Create:
+   - Register
+   - Login
+   - Logout
+   - User profile
+
+   Support two user roles:
+   - Farmer/Buyer
+   - Equipment Owner/Seller
+
+9. **Nearby Equipment**
+   Show equipment based on location.
+   For the MVP, use sample locations and distance values.
+   Display:
+   - Equipment
+   - Distance
+   - Price
+   - Availability
+
+10. **Ratings and Reviews**
+   Farmers can rate equipment/owners.
+   Show average rating and reviews on equipment details.
+
+### Unique Hackathon Features
+
+Include these features in the UI:
+
+**1. Group Purchase**
+Multiple farmers can show interest in jointly purchasing expensive machinery.
+
+**2. Equipment Condition Verification**
+For used equipment, show:
+- Condition score
+- Manufacturing year
+- Usage hours
+- Maintenance history
+
+**3. Emergency Replacement**
+If rented equipment breaks down, provide a button:
+"Find Replacement Equipment"
+and show nearby available equipment.
+
+**4. Smart Price Estimation**
+When an owner enters equipment type, age, condition and usage hours, suggest an estimated selling price.
+
+**5. Trust Score**
+Give equipment owners a trust score based on:
+- Ratings
+- Completed transactions
+- On-time returns
+- Verified profile
+
+### Database Models
+
+Create suitable database models/tables for:
+
+Users:
+- id
+- name
+- email
+- password
+- role
+- phone
+- location
+
+Equipment:
+- id
+- ownerId
+- name
+- category
+- description
+- buyPrice
+- rentalPrice
+- condition
+- year
+- usageHours
+- location
+- images
+- rating
+- availability
+
+Bookings:
+- id
+- equipmentId
+- farmerId
+- startDate
+- endDate
+- totalPrice
+- status
+
+Purchases:
+- id
+- equipmentId
+- buyerId
+- price
+- status
+
+Reviews:
+- id
+- equipmentId
+- userId
+- rating
+- comment
+
+### Design
+
+Use a professional agricultural theme.
+
+Design requirements:
+- Clean modern UI
+- Green/earth-inspired visual style
+- Large readable typography
+- Rounded cards
+- Good spacing
+- Attractive equipment images
+- Responsive mobile layout
+- Smooth hover effects
+- Professional navigation bar
+- Clear CTA buttons
+- Dashboard with useful cards/statistics
+
+Do NOT make it look like a basic college project.
+
+### Demo Data
+
+Add realistic sample equipment such as:
+
+1. John Deere Tractor
+2. Mahindra Tractor
+3. Combine Harvester
+4. Water Pump
+5. Rice Transplanter
+6. Power Sprayer
+7. Rotavator
+8. Seed Drill
+
+Add realistic Indian locations, prices in ₹, ratings and availability.
+
+### Important
+
+Make the application fully navigable.
+
+All buttons should perform meaningful actions or open the appropriate page/modal.
+
+Use reusable React components.
+
+Create a clean folder structure.
+
+Handle loading states, empty states and form validation.
+
+Make the application ready for a hackathon demo.
+
+Start by building the complete frontend and backend structure, then connect the database and API endpoints.
+
+Do not leave major pages as blank placeholders.

@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "AgriShare"
+description = "A marketplace for Indian farmers to buy, rent, and sell agricultural equipment, with smart recommendations, nearby listings, bookings, and owner tools."
+version = "1.0.0"
+id = "artifacts/agrishare"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23142
+
+[services.development]
+run = "pnpm --filter @workspace/agrishare run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/agrishare", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/agrishare/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23142"
+BASE_PATH = "/"
