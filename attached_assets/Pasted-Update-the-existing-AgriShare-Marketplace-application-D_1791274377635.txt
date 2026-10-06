@@ -1,0 +1,195 @@
+Update the existing AgriShare Marketplace application. Do NOT rebuild the project from scratch.
+
+I want users/equipment owners to be able to add their OWN agricultural equipment to the marketplace.
+
+### 1. Improve the "Sell Equipment" page
+
+When the user clicks "Sell equipment", open a professional "List Your Equipment" page/form.
+
+Create these fields:
+
+- Equipment name
+- Equipment category
+  - Tractor
+  - Harvester
+  - Water Pump
+  - Sprayer
+  - Seeder
+  - Rotavator
+  - Cultivator
+  - Other
+- Listing type:
+  - For Sale
+  - For Rent
+  - Both Buy & Rent
+- Selling price (₹)
+- Rental price per day (₹)
+- Brand
+- Model
+- Manufacturing year
+- Usage hours
+- Condition:
+  - Excellent
+  - Good
+  - Fair
+- Location
+- Description
+- Phone number
+- Equipment images
+
+### 2. Image Upload
+
+Allow the owner to upload multiple images of their equipment.
+
+Show image previews before submitting.
+
+The first image should become the main marketplace image.
+
+If possible, store uploaded images using the existing image-upload/database system. Do not use fake image URLs for newly added equipment.
+
+### 3. Form Validation
+
+Make all important fields required.
+
+Validate:
+- Price must be greater than 0
+- Manufacturing year must be valid
+- Phone number must be valid
+- At least one equipment image should be uploaded
+
+Show clear error messages.
+
+### 4. Submit Equipment
+
+Add a large button:
+
+"List Equipment"
+
+When clicked:
+
+1. Save the equipment to the database.
+2. Associate it with the currently logged-in owner.
+3. Set its status to "Available".
+4. Show a success message:
+   "Equipment listed successfully!"
+5. Redirect the user to the equipment details page.
+
+### 5. Marketplace Integration
+
+IMPORTANT:
+
+New equipment added by users MUST automatically appear in the existing Marketplace page.
+
+Do not only save it in the database.
+
+Update the marketplace API/query so it retrieves both:
+- Existing demo equipment
+- Newly added user equipment
+
+New listings should appear at the top of the marketplace.
+
+### 6. Equipment Details
+
+When someone clicks a newly added equipment card, show:
+
+- All uploaded images
+- Equipment name
+- Brand
+- Model
+- Year
+- Usage hours
+- Condition
+- Selling price
+- Rental price
+- Location
+- Description
+- Owner name
+- Owner rating/trust score
+- Contact Owner button
+- Buy Now button if for sale
+- Rent Now button if for rent
+
+### 7. Owner Dashboard
+
+Update the existing Dashboard.
+
+Add a section:
+
+"My Equipment"
+
+Show all equipment listed by the logged-in owner.
+
+Each listing should have:
+
+- Image
+- Equipment name
+- Sale/Rent status
+- Price
+- Availability
+- Edit button
+- Delete button
+
+Allow owners to edit or delete their listings.
+
+### 8. Edit Equipment
+
+Create an "Edit Equipment" page.
+
+Owners should be able to update:
+- Price
+- Rental price
+- Condition
+- Description
+- Location
+- Availability
+- Images
+- Other equipment details
+
+### 9. Delete Equipment
+
+Add a Delete button in "My Equipment".
+
+Ask for confirmation before deleting.
+
+Only the owner of the equipment should be allowed to edit or delete it.
+
+### 10. Demo Test
+
+After implementing this, test this complete flow:
+
+Register/Login as an equipment owner
+→ Click "Sell Equipment"
+→ Enter:
+
+Equipment: Mahindra Tractor
+Category: Tractor
+Listing: Both Buy & Rent
+Selling price: ₹5,50,000
+Rental price: ₹3,500/day
+Brand: Mahindra
+Model: 575 DI
+Year: 2022
+Usage: 1200 hours
+Condition: Good
+Location: Vijayawada
+Description: Well-maintained tractor suitable for farming and cultivation.
+
+Upload an equipment image
+→ Click "List Equipment"
+→ Equipment is saved
+→ Equipment appears in Marketplace
+→ Click the equipment
+→ Details page displays all information
+→ Owner can see it under "My Equipment".
+
+### IMPORTANT UI REQUIREMENT
+
+Keep the current AgriShare design and styling shown in the existing application.
+
+Do NOT replace the existing marketplace.
+
+Add this functionality into the current project.
+
+Make the "Sell Equipment" page visually professional and consistent with the existing design.
+
+After implementation, test the complete Add Equipment → Database → Marketplace → Details → Dashboard flow and fix any errors.
